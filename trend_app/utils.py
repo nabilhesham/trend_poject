@@ -35,10 +35,6 @@ def save_to_database(keyword, data, search_type):
 
     if search_type == "intereset_by_region":
         new_counter = intereset_by_region_counter
-    elif search_type == 'get_historical_interest':
-        new_counter = get_historical_interest_counter
-
-    if search_type:
         trend_name = TrendName.objects.create(
             name=keyword, search_type=search_type)
         print(trend_name)
@@ -54,37 +50,22 @@ def save_to_database(keyword, data, search_type):
             print(counter)
         return True
 
-    # if search_type == "intereset_by_region":
-    #     trend_name = TrendName.objects.create(
-    #         name=keyword, search_type=search_type)
-    #     print(trend_name)
-    #     counter = 0
-    #     for k, v in data.items():
-    #         # get only 51 results fot the states
-    #         if counter > 50:
-    #             counter = 0
-    #             break
-    #         Trend.objects.create(name=trend_name, region=str(
-    #             k).split(" ")[0], interest=v)
-    #         counter += 1
-    #         print(counter)
-    #     return True
-
-    # elif search_type == 'get_historical_interest':
-    #     trend_name = TrendName.objects.create(
-    #         name=keyword, search_type=search_type)
-    #     print(trend_name)
-    #     counter = 0
-    #     for k, v in data.items():
-    #         # get only results for 15 dayes
-    #         if counter > 15:
-    #             counter = 0
-    #             break
-    #         Trend.objects.create(name=trend_name, date=str(
-    #             k).split(" ")[0], interest=v)
-    #         counter += 1
-    #         print(counter)
-    #     return True
+    elif search_type == 'get_historical_interest':
+        new_counter = get_historical_interest_counter
+        trend_name = TrendName.objects.create(
+            name=keyword, search_type=search_type)
+        print(trend_name)
+        counter = 0
+        for k, v in data.items():
+            # get only 15 results fot the days
+            if counter > new_counter:
+                counter = 0
+                break
+            Trend.objects.create(name=trend_name, date=str(
+                k).split(" ")[0], interest=v)
+            counter += 1
+            print(counter)
+        return True
 
 
 # get data from api

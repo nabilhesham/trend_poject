@@ -18,7 +18,9 @@ def home(request):
         if choice == "intereset_by_region":
 
             # check for keywords number to meet requirements ( 2 keywords)
-            keywords = keyword.split(',')
+            # remove space if written
+            keywords = [i.lstrip(' ') for i in keyword.split(
+                ',') if i.startswith(' ') or i]
             if len(keywords) > 2 or len(keywords) < 2:
                 print("error")
             elif keyword == "":
@@ -28,20 +30,12 @@ def home(request):
                 for i in keywords:
 
                     # check if the trends is already in the database or not by searching by the search_type and keywords
-                    previous_trend_name_region = TrendName.objects.filter(
-                        search_type="interest_by_region")
-                    if previous_trend_name_region:
-                        previous_trend_name_name = previous_trend_name_region.filter(
-                            name=i)
-                        if previous_trend_name_name:
-                            trend_name = previous_trend_name_name
-                        else:
-                            not_found = True
-                    else:
-                        not_found = True
+                    is_exist_type = TrendName.objects.filter(
+                        search_type=choice)
+                    is_exist_name = is_exist_type.filter(name=i)
 
                     # if the search didn't exist .. create a new object for the results and save it in the database
-                    if not_found:
+                    if not is_exist_name:
                         # get the result from api
                         data = get_data(i, choice)
                         # save to database
@@ -61,21 +55,13 @@ def home(request):
                 counter = 0
                 for i in keywords:
 
-                    # check for previous searchs results in the database
-                    previous_trend_name_historical = TrendName.objects.filter(
-                        search_type="get_historical_interest")
-                    if previous_trend_name_historical:
-                        previous_trend_name_name = previous_trend_name_historical.filter(
-                            name=i)
-                        if previous_trend_name_name:
-                            trend_name = previous_trend_name_name
-                        else:
-                            not_found = True
-                    else:
-                        not_found = True
+                    # check if the trends is already in the database or not by searching by the search_type and keywords
+                    is_exist_type = TrendName.objects.filter(
+                        search_type=choice)
+                    is_exist_name = is_exist_type.filter(name=i)
 
                     # create a new result in the database
-                    if not_found:
+                    if not is_exist_name:
                         # get the result from api
                         data = get_data(i, choice)
                         # save to database
