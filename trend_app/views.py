@@ -15,7 +15,7 @@ def home(request):
         keyword = request.GET['keyword'].lower()
 
         # interest_by_region search
-        if choice == "intereset_by_region":
+        if choice == "interest_by_region":
 
             # check for keywords number to meet requirements ( 2 keywords)
             # remove space if written
@@ -36,6 +36,7 @@ def home(request):
 
                     # if the search didn't exist .. create a new object for the results and save it in the database
                     if not is_exist_name:
+                        print("not exist")
                         # get the result from api
                         data = get_data(i, choice)
                         # save to database

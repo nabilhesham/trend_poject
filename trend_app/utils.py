@@ -5,6 +5,7 @@ from .models import Trend, TrendName
 
 # get search data
 def get_data(keyword, trend_type):
+    data = {}
     # Connect to Google
     pytrend = TrendReq(hl='en-US', tz=360)
 
@@ -17,12 +18,14 @@ def get_data(keyword, trend_type):
     )
 
     # get the data from the api if intereset_by_region or get_historical_interest
-    if trend_type == 'intereset_by_region':
-        data = pytrend.interest_by_region(resolution='COUNTRY')
+    if trend_type == 'interest_by_region':
+        data = pytrend.interest_by_region()
+        data = data.to_dict()[keyword]
     elif trend_type == 'get_historical_interest':
         data = pytrend.interest_over_time()
-
-    data = data.to_dict()[keyword]
+        data = data.to_dict()[keyword]
+    print(data)
+    print("data")
     return data
 
 
@@ -33,7 +36,7 @@ def save_to_database(keyword, data, search_type):
     intereset_by_region_counter = 50
     get_historical_interest_counter = 15
 
-    if search_type == "intereset_by_region":
+    if search_type == "interest_by_region":
         new_counter = intereset_by_region_counter
         trend_name = TrendName.objects.create(
             name=keyword, search_type=search_type)
@@ -73,7 +76,7 @@ def get_from_api(name=None, search_type=None):
     if name and search_type == 'get_historical_interest':
         return requests.get('http://127.0.0.1:8000/trend/api/trends/?name={}&type={}'.format(name, search_type)).json()
 
-    elif type(name) == list and search_type == 'intereset_by_region':
+    elif type(name) == list and search_type == 'interest_by_region':
         all_data = []
         for k in name:
             data = requests.get(

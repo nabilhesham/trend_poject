@@ -44,6 +44,7 @@ $(document).ready(function () {
     trend1 = $("#trend1").text();
     trend2 = $("#trend2").text();
     search_type = $("table").attr("search_type");
+    console.log(search_type);
     get_data(trend1, search_type);
     res1 = JSON.parse(localStorage.getItem("res1"));
     if (trend2) {
@@ -60,10 +61,12 @@ function get_data(trend, search_type, trend2_exist = false) {
   fetch(url)
     .then((res) => res.json())
     .then((res) => {
+      console.log(res);
       if (trend2_exist) {
         console.log(res);
-        localStorage.setItem("res1", JSON.stringify(res));
+        localStorage.setItem("res2", JSON.stringify(res));
       } else {
+        console.log(res);
         localStorage.setItem("res1", JSON.stringify(res));
       }
     })
